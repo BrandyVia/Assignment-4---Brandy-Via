@@ -1,0 +1,53 @@
+---
+title: "Assignment 4"
+author: "Brandy Via"
+date: "9/27/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load library
+```{r}
+library(lpSolveAPI)
+```
+## 9 decision variables
+```{r}
+lprec <- make.lp(0,9)
+## Define objective function
+set.objfn(lprec, c(420,420,420,360,360,360,300,300,300))
+## We are interested in maximizing profit
+lp.control(lprec,sense='max')
+```
+
+```{r}
+## Define all constraints
+add.constraint(lprec, c(1,1,1,0,0,0,0,0,0), "<=", 900)
+add.constraint(lprec, c(0,0,0,1,1,1,0,0,0), "<=", 1200)
+add.constraint(lprec, c(0,0,0,0,0,0,1,1,1), "<=", 750)
+add.constraint(lprec, c(1,0,0,1,0,0,1,0,0), "<=", 750)
+add.constraint(lprec, c(0,1,0,0,1,0,0,1,0), "<=", 900)
+add.constraint(lprec, c(0,0,1,0,0,1,0,0,1), "<=", 450)
+add.constraint(lprec, c(20,0,0,15,0,0,12,0,0), "<=", 13000)
+add.constraint(lprec, c(0,20,0,0,15,0,0,12,0), "<=", 12000)
+add.constraint(lprec, c(0,0,20,0,0,15,0,0,12), "<=", 5000)
+add.constraint(lprec, c(6,-5,0,6,-5,0,6,-5,0), "=", 0)
+add.constraint(lprec, c(0,1,-2,0,1,-2,0,1,-2), "=", 0)
+add.constraint(lprec, c(-3,0,5,-3,0,5,-3,0,5), "=", 0)
+```
+```{r}
+## Print out the model
+lprec
+## Save it into a file
+write.lp(lprec, filename = "Assignment4.lp", type = "lp")
+## Solve the model
+solve(lprec)
+get.objective(lprec)
+get.variables(lprec)
+```
+
+
